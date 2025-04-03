@@ -1,0 +1,5 @@
+{
+  "https://example.com": "content of the page...",
+  "https://example.com/about": "about page content...",
+  ...
+}
