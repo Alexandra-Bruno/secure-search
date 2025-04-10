@@ -1,12 +1,11 @@
-# This code should consist of a web crawler/spider.
-# The purpose of a web crawler is to search the web and download pages.
-# Code: Python
-# Coder: Alexandra Bruno
-
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from Index import save_to_index 
+
+# Create a requests session with no cookies!
+session = requests.Session()
+session.cookies.clear()
 
 def crawler(start_url, visited=None, depth=2):
     # Initialize the visited page set.
@@ -25,8 +24,14 @@ def crawler(start_url, visited=None, depth=2):
     visited.add(start_url)
 
     try:
-        # Send a GET request to the URL and limit wait time to 5 sec to preserve efficiency/resources.
-        response = requests.get(start_url, timeout=5)
+        headers = {
+            "User-Agent": "Mozilla/5.0 (compatible; SecureBot/1.0)",
+            "DNT": "1" # A polite request not to be tracked.
+        }
+
+        # Send a GET request to the URL and limit wait time to 5 sec to preserve efficiency/resources. 
+        # Disable cookies by sending an empty cookie jar
+        response = session.get(start_url, headers=headers, cookies={}, timeout=5)
         response.raise_for_status() # Raise and exception for bad responses.
 
         # Parse the webpage content using BeautifulSoup.
