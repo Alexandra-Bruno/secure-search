@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NovaSearch</title>
-  <link href="style.css" rel="stylesheet">
-  </head>
+  <title>Secure Search</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
 <body>
   <h1>Secure Search</h1>
-    <form action="search.php" method="GET">
-      <input type="text" name="query" placeholder="Search the web..." />
-      <button type="submit">Go!</button>
+  <div class="search-box">
+    <form method="post">
+      <input type="text" name="q" placeholder="Enter your query..." />
+      <button type="submit">
+        <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Search" />
+      </button>
     </form>
-        <ul>
-        {% for url in results %}
-            <li><a href="{{ url }}" target="_blank">{{ url }}</a></li>
-        {% endfor %}
-    </ul>
+  </div>
 </body>
 </html>
