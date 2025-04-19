@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Secure Search</title>
-</head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NovaSearch</title>
+  <link href="style.css" rel="stylesheet">
+  </head>
 <body>
-    <h1>Secure Search</h1>
-    <form method="post">
-        <input type="text" name="query" placeholder="Enter search query" required>
-        <button type="submit">Search</button>
+  <h1>Secure Search</h1>
+    <form action="search.php" method="GET">
+      <input type="text" name="query" placeholder="Search the web..." />
+      <button type="submit">Go!</button>
     </form>
-    <ul>
+        <ul>
         {% for url in results %}
             <li><a href="{{ url }}" target="_blank">{{ url }}</a></li>
         {% endfor %}
