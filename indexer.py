@@ -18,13 +18,16 @@ with open('data.json', 'r') as f:
 stop_words = set(stopwords.words('english'))
 
 def build_index():
-    for url, content in index_data.items():
+    nltk.download('stopwords')
+    nltk.download('punkt')
+
+    for url, data in index_data.items():
+        content = data if isinstance(data, str) else data.get("content", "")
         words = word_tokenize(content.lower())
         for word in words:
             if word.isalnum() and word not in stop_words:
                 inverted_index[word].add(url)
 
-    # Save the inverted index
     with open('index.json', 'w') as f:
         json.dump({k: list(v) for k, v in inverted_index.items()}, f)
 

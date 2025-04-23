@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Simple Search Engine</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Search</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
-    <h1>Search Engine</h1>
+  <h1>Secure Search</h1>
+  <div class="search-box">
     <form method="post">
-        <input type="text" name="query" placeholder="Enter search query" required>
-        <button type="submit">Search</button>
+      <input type="text" name="query" placeholder="Enter your query..." />
+      <button type="submit">
+        <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Search" />
+      </button>
     </form>
-    <ul>
-        {% for url in results %}
-            <li><a href="{{ url }}" target="_blank">{{ url }}</a></li>
-        {% else %}
-            {% if results is not none %}
-                <li>No results found.</li>
-            {% endif %}
+  </div>
+
+  {% if results %}
+    <div class="results">
+      <h2>Search Results:</h2>
+      <ul>
+        {% for result in results %}
+          <li>
+            <a href="{{ result.url }}" target="_blank">{{ result.title }}</a><br>
+            <small>{{ result.snippet }}</small>
+          </li>
         {% endfor %}
-    </ul>
-    
-    
+      </ul>
+    </div>
+  {% endif %}
 </body>
 </html>
+

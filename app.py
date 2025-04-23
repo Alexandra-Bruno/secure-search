@@ -18,24 +18,20 @@ def index():
 def search(query):
     print(f"Searching for: {query}")
     query_words = query.lower().split()
-    results = set()
-    for word in query_words:
-        if word in inverted_index:
-            if not results:
-                results = set(inverted_index[word])
-            else:
-                results &= set(inverted_index[word])  # Intersection
-    print(f"Results: {results}")
-    return results
 
-
-    # Load page data
     with open('data.json', 'r') as f:
         page_data = json.load(f)
 
-    # Prepare display info
+    result_urls = set()
+    for word in query_words:
+        if word in inverted_index:
+            if not result_urls:
+                result_urls = set(inverted_index[word])
+            else:
+                result_urls &= set(inverted_index[word])  # intersection
+
     display_results = []
-    for url in results:
+    for url in result_urls:
         title = page_data.get(url, {}).get('title', 'No Title')
         snippet = page_data.get(url, {}).get('snippet', 'No snippet available.')
         display_results.append({
@@ -44,8 +40,8 @@ def search(query):
             'snippet': snippet
         })
 
+    print(f"Results: {display_results}")
     return display_results
+
 if __name__ == '__main__':
     app.run(debug=True)
-
-
