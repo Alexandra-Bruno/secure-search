@@ -1,15 +1,27 @@
 import json
+import os
 
-try:
-    with open('data.json', 'r') as f:
-        index_data = json.load(f)
-except FileNotFoundError:
-    index_data = {}
+def index_page(url, content, title=None, snippet=None):
+    data_file = 'data.json'
 
-def index_page(url, title, snippet):
-    index_data[url] = {
-        "title": title,
-        "snippet": snippet
+    # Create the file if it doesn't exist
+    if not os.path.exists(data_file):
+        with open(data_file, 'w') as f:
+            json.dump({}, f)
+
+    # Load existing data
+    with open(data_file, 'r') as f:
+        data = json.load(f)
+
+    # Update or add new entry
+    data[url] = {
+        'title': title or 'No Title',
+        'snippet': snippet or '',
+        'content': content
     }
-    with open('data.json', 'w') as f:
-        json.dump(index_data, f, indent=4)
+
+    # Save back to file
+    with open(data_file, 'w') as f:
+        json.dump(data, f, indent=2)
+
+    print(f"Indexed: {url}")
