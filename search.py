@@ -5,7 +5,6 @@ with open('index.json', 'r') as f:
     inverted_index = json.load(f)
 
 def search(query):
-    print(f"Searching for: {query}")
     query_words = query.lower().split()
 
     with open('index.json', 'r') as f:
@@ -31,7 +30,6 @@ def search(query):
             'snippet': page.get('snippet', 'No snippet available.')
         })
 
-    print(f"Results: {display_results}")
     return display_results
 
 
