@@ -8,6 +8,11 @@ from storage import index_page  # Must handle title/snippet/content
 session = requests.Session()
 session.cookies.clear()
 
+headers = {
+            "User-Agent": "Mozilla/5.0 (compatible; SecureBot/1.0)",
+            "DNT": "1"
+        }
+
 def crawler(start_url, visited, depth=1):
     if depth == 0 or start_url in visited:
         return
@@ -15,24 +20,15 @@ def crawler(start_url, visited, depth=1):
     visited.add(start_url)
 
     try:
-        headers = {
-            "User-Agent": "Mozilla/5.0 (compatible; SecureBot/1.0)",
-            "DNT": "1"
-        }
-
         response = session.get(start_url, headers=headers, cookies={}, timeout=5)
         response.raise_for_status()
 
         soup = BeautifulSoup(response.text, 'html.parser')
+        
+        #Get basic Information
         title = soup.title.string.strip() if soup.title else 'No Title'
         text = soup.get_text(separator=' ', strip=True)
         snippet = ' '.join(text.split()[:50])  # First 50 words
-
-        #  DEBUG PRINT: Show what’s about to be indexed
-        print(f"\nIndexing {start_url}")
-        print(f"Title: {title}")
-        print(f"Snippet: {snippet}")
-        print(f"Content length: {len(text)}\n")
 
         # Save full content to data.json
         index_page(start_url, text, title=title, snippet=snippet)
@@ -61,6 +57,7 @@ seeds = [
     
     # Blogs and publications
     "https://blog.mozilla.org/en/",
+    "https://www.dictionary.com",
 
     # Educational or scientific orgs
     "https://www.nasa.gov/",
