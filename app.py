@@ -43,7 +43,6 @@ def suggest():
     return jsonify(suggestions)
 
 def search(query):
-    print(f"Searching for: {query}")
     query_words = query.lower().split()
 
     result_urls = set()
@@ -64,11 +63,9 @@ def search(query):
             'snippet': snippet
         })
 
-    print(f"Results: {display_results}")
     return display_results
 
 if __name__ == '__main__':
     app.run(debug=True)
 
-print("Running on http://127.0.0.1:5000/")
 
