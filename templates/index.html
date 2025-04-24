@@ -10,13 +10,15 @@
 <body>
   <h1>Secure Search</h1>
   <div class="search-box">
-    <form method="post">
-      <input type="text" name="query" placeholder="Enter your query..." />
-      <button type="submit">
+    <form method="post" autocomplete="off">
+      <input type="text" id="search-input" name="query" placeholder="Enter your query..." />
+      <!-- <button type="submit">
         <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Search" />
-      </button>
+      </button> -->
     </form>
+    <div id="suggestions" class="suggestions-box"></div>
   </div>
+  
 
   {% if results %}
     <div class="results">
@@ -31,6 +33,33 @@
       </ul>
     </div>
   {% endif %}
+  <script>
+    const input = document.getElementById("search-input");
+    const suggestionsBox = document.getElementById("suggestions");
+  
+    input.addEventListener("input", async () => {
+      const query = input.value.trim();
+      if (query === "") {
+        suggestionsBox.innerHTML = "";
+        return;
+      }
+  
+      const response = await fetch(`/suggest?q=${encodeURIComponent(query)}`);
+      const suggestions = await response.json();
+  
+      suggestionsBox.innerHTML = suggestions.map(text => `
+        <div class="suggestion-item">${text}</div>
+      `).join("");
+  
+      document.querySelectorAll(".suggestion-item").forEach(item => {
+        item.addEventListener("click", () => {
+          input.value = item.textContent;
+          suggestionsBox.innerHTML = "";
+        });
+      });
+    });
+  </script>
+  
 </body>
 </html>
 

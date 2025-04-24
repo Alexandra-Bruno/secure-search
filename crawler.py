@@ -52,9 +52,12 @@ def crawler(start_url, visited, depth=1):
 seeds = [
     
     # Universities with mostly static, text-based homepages
+    "https://www.morgan.edu/",
+
     "https://www.mit.edu/",
     "https://www.stanford.edu/",
     "https://www.cmu.edu/",
+
     
     # Blogs and publications
     "https://blog.mozilla.org/en/",

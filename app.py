@@ -1,11 +1,22 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 import json
 
 app = Flask(__name__)
 
-# Load the inverted index
+@app.after_request
+def disable_caching(response):
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+
+# Load the inverted index once
 with open('index.json', 'r') as f:
     inverted_index = json.load(f)
+
+# Load the site data once (optional: move this to a function if you update it often)
+with open('data.json', 'r') as f:
+    page_data = json.load(f)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -15,12 +26,25 @@ def index():
         results = search(query)
     return render_template('index.html', results=results)
 
+@app.route('/suggest')
+def suggest():
+    query = request.args.get('q', '').lower()
+    if not query:
+        return jsonify([])
+
+    suggestions = []
+    for url, data in page_data.items():
+        title = data.get('title', '').lower()
+        if query in title:
+            suggestions.append(data.get('title', ''))
+        if len(suggestions) >= 5:
+            break
+
+    return jsonify(suggestions)
+
 def search(query):
     print(f"Searching for: {query}")
     query_words = query.lower().split()
-
-    with open('data.json', 'r') as f:
-        page_data = json.load(f)
 
     result_urls = set()
     for word in query_words:
@@ -45,3 +69,6 @@ def search(query):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+print("Running on http://127.0.0.1:5000/")
+
