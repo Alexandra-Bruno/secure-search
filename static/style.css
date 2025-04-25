@@ -22,7 +22,7 @@ h1 {
 .search-box {
   width: 90%;
   max-width: 600px;
-  position: relative;
+  position: relative; /* anchors the dropdown */
 }
 
 .search-box input[type="text"] {
@@ -63,6 +63,37 @@ h1 {
   width: 20px;
   height: 20px;
 }
+
+.suggestions-box {
+  position: absolute;
+  top: 100%; /* right below the input */
+  left: 0;
+  width: 100%;
+  background: rgb(152, 153, 156);
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  z-index: 999;
+  font-family: 'Inter', sans-serif;
+  color: black; /* make text readable */
+  border-radius: 0 0 8px 8px;
+  display: none; /* Initially hidden */
+}
+
+/* Show the suggestions box only when there are results */
+.suggestions-box.active {
+  display: block;
+}
+
+.suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background-color: #f0f8ff;
+}
+
 .results li a {
   color: #ffffff !important; /* force white color */
   text-decoration: none;

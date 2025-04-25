@@ -5,3 +5,8 @@ Our purpose for this project to create a private search engine. We will ensure u
 * No Tracking: No cookies or user profiling.
 * Secured data: Encryption to protect search queries
 * Simple Desgn
+
+## PROFESSOR PLEASE READ
+* This is version 1 of our project professor we well have version 2 and the final done on monday 4/28
+* Thank you for the oppurtunity for allowing us to bang out some impurites and refine our project 
+

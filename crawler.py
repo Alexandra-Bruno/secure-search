@@ -52,6 +52,28 @@ def crawler(start_url, visited, depth=1):
 seeds = [
     
     # Universities with mostly static, text-based homepages
+    "https://www.dropbox.com/",
+    "https://x.com/home",
+    "https://www.reddit.com/",
+    "https://www.amazon.com/",
+    "https://www.quora.com/",
+    "https://stackoverflow.com/questions",
+    "https://www.youtube.com/",
+    "https://www.google.com/",
+    "https://www.apple.com/",
+    "https://leetcode.com/",
+    "https://www.morgan.edu/tutoring",
+    "https://www.starbucks.com/",
+    "https://www.morgan.edu/residencelife",
+    "https://www.morgan.edu/apply",
+    "https://www.zoom.com/",
+    "https://gateway.morgan.edu/casban/",
+    "https://www.youtube.com/",
+    "https://www.pinterest.com/",
+    "https://openai.com/",
+    "https://www.khanacademy.org/",
+    "https://github.com/",
+    "https://www.wikipedia.org/",
     "https://www.morgan.edu/",
 
     "https://www.mit.edu/",
@@ -71,4 +93,4 @@ seeds = [
 # Global visited set shared across all seed calls
 visited = set()
 for seed in seeds:
-    crawler(seed, visited=set(), depth=1)
+    crawler(seed, visited=set(), depth=2)
