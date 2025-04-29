@@ -1,29 +1,67 @@
 from flask import Flask, request, render_template, jsonify
-import json
+import requests
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
+word_bank = set()
+
+# Blocks any untrusted JavaScript or other extenral hacking
 @app.after_request
 def disable_caching(response):
     response.headers["Cache-Control"] = "no-store"
+    response.headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' https:; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"
     return response
 
 
+def duckduckgo_search(query):
+    search_url = "https://html.duckduckgo.com/html/"
+    payload = {
+        'q': query
+    }
 
-# Load the inverted index once
-with open('index.json', 'r') as f:
-    inverted_index = json.load(f)
+    try:
+        response = requests.post(search_url, data=payload, timeout=7)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-# Load the site data once (optional: move this to a function if you update it often)
-with open('data.json', 'r') as f:
-    page_data = json.load(f)
+        results = []
+        links = soup.find_all('a', attrs={'class': 'result__a'}, limit=10)
+
+        for link in links:
+            title = link.get_text()
+            url = link.get('href')
+
+            # Find snippet (from nearby div if possible)
+            snippet_div = link.find_parent('div', class_='result__body')
+            snippet = snippet_div.get_text(separator=' ', strip=True) if snippet_div else ''
+
+            results.append({
+                'url': url,
+                'title': title,
+                'snippet': snippet
+            })
+
+            words_in_title = title.lower().split()
+            words_in_snippet = snippet.lower().split()
+
+            for word in words_in_title + words_in_snippet:
+                clean_word = ''.join(char for char in word if char.isalnum())
+                if len(clean_word) > 2:
+                    word_bank.add(clean_word)
+
+        return results
+
+    except Exception as e:
+        print(f"Error searching DuckDuckGo: {e}")
+        return []
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     results = []
     if request.method == 'POST':
         query = request.form['query']
-        results = search(query)
+        results = duckduckgo_search(query)
     return render_template('index.html', results=results)
 
 @app.route('/suggest')
@@ -32,40 +70,11 @@ def suggest():
     if not query:
         return jsonify([])
 
-    suggestions = []
-    for url, data in page_data.items():
-        title = data.get('title', '').lower()
-        if query in title:
-            suggestions.append(data.get('title', ''))
-        if len(suggestions) >= 5:
-            break
+    matches = [word for word in word_bank if word.startswith(query)]
+    return jsonify(matches[:5])
 
-    return jsonify(suggestions)
-
-def search(query):
-    query_words = query.lower().split()
-
-    result_urls = set()
-    for word in query_words:
-        if word in inverted_index:
-            if not result_urls:
-                result_urls = set(inverted_index[word])
-            else:
-                result_urls &= set(inverted_index[word])  # intersection
-
-    display_results = []
-    for url in result_urls:
-        title = page_data.get(url, {}).get('title', 'No Title')
-        snippet = page_data.get(url, {}).get('snippet', 'No snippet available.')
-        display_results.append({
-            'url': url,
-            'title': title,
-            'snippet': snippet
-        })
-
-    return display_results
 
 if __name__ == '__main__':
     app.run(debug=True)
 
-
+print("Running on http://127.0.0.1:5000/")

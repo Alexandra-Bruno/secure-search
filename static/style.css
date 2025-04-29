@@ -63,3 +63,13 @@ h1 {
   width: 20px;
   height: 20px;
 }
+
+.results li a {
+  color: #00d4ff; 
+  text-decoration: none;
+}
+
+.results li a:hover {
+  color: #80d8ff;
+  text-decoration: underline;
+}
